@@ -4,4 +4,5 @@ bin/
 .DS_Store
 .project
 .classpath
+.settings
 org.eclipse.buildship.core.prefs
