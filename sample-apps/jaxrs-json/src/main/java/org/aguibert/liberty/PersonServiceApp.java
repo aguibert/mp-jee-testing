@@ -21,5 +21,5 @@ package org.aguibert.liberty;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/")
+@ApplicationPath("/app")
 public class PersonServiceApp extends Application { }
