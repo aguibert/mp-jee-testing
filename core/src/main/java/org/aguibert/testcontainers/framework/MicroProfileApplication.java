@@ -50,7 +50,9 @@ public class MicroProfileApplication<SELF extends MicroProfileApplication<SELF>>
     private final List<Class<?>> providers = new ArrayList<>();
 
     public MicroProfileApplication() {
-        super(new ImageFromDockerfile().withFileFromPath(".", Paths.get(".")));
+        super(new ImageFromDockerfile()
+                        .withDockerfilePath("Dockerfile") // TODO use withDockerfile(File) here because it honors .dockerignore
+                        .withFileFromPath(".", Paths.get(".")));
         commonInit();
     }
 
@@ -86,22 +88,24 @@ public class MicroProfileApplication<SELF extends MicroProfileApplication<SELF>>
         providers.add(JsonBProvider.class);
     }
 
+    /**
+     * Sets the application context root. The protocol, hostname, and port do not need to be
+     * included in the <code>appContextRoot</code> parameter. For example, an application
+     * "foo.war" is available at <code>http://localhost:8080/foo/</code> the context root can
+     * be set using <code>withAppContextRoot("/foo")</code>.
+     */
     public SELF withAppContextRoot(String appContextRoot) {
         Objects.requireNonNull(appContextRoot);
-        if (!appContextRoot.startsWith("/"))
-            appContextRoot = "/" + appContextRoot;
-        if (!appContextRoot.endsWith("/"))
-            appContextRoot += "/";
-        this.appContextRoot = appContextRoot;
+        this.appContextRoot = appContextRoot = JAXRSUtilities.buildPath(appContextRoot);
         waitingFor(Wait.forHttp(this.appContextRoot)
                         .withStartupTimeout(Duration.ofSeconds(serverAdapter.getDefaultAppStartTimeout())));
         return self();
     }
 
     /**
-     * @param readinessUrl The container readiness path to be used to determine container readiness.
-     *            If the path starts with '/' it is an absolute path (after hostname and port). If it does not
-     *            start with '/', the path is relative to the current appContextRoot.
+     * Sets the path to be used to determine container readiness.
+     * If the path starts with '/' it is an absolute path (after hostname and port). If it does not
+     * start with '/', the path is relative to the current appContextRoot.
      */
     public SELF withReadinessPath(String readinessUrl) {
         withReadinessPath(readinessUrl, serverAdapter.getDefaultAppStartTimeout());
@@ -116,8 +120,7 @@ public class MicroProfileApplication<SELF extends MicroProfileApplication<SELF>>
      */
     public SELF withReadinessPath(String readinessUrl, int timeoutSeconds) {
         Objects.requireNonNull(readinessUrl);
-        if (!readinessUrl.startsWith("/"))
-            readinessUrl = appContextRoot + readinessUrl;
+        readinessUrl = JAXRSUtilities.buildPath(readinessUrl);
         waitingFor(Wait.forHttp(readinessUrl)
                         .withStartupTimeout(Duration.ofSeconds(timeoutSeconds)));
         return self();
@@ -137,14 +140,15 @@ public class MicroProfileApplication<SELF extends MicroProfileApplication<SELF>>
     }
 
     public <T> T createRestClient(Class<T> clazz, String applicationPath) {
+        Objects.requireNonNull(applicationPath, "Supplied 'applicationPath' must not be null");
         String urlPath = getBaseURL();
-        if (applicationPath != null)
-            urlPath += applicationPath;
+        urlPath += applicationPath;
+        LOGGER.info("Building rest client for " + clazz + " with path: " + urlPath + " and providers: " + providers);
         return JAXRSClientFactory.create(urlPath, clazz, providers);
     }
 
     public <T> T createRestClient(Class<T> clazz) {
-        return createRestClient(clazz, appContextRoot);
+        return createRestClient(clazz, JAXRSUtilities.resolveJaxrsAppPath(appContextRoot, clazz));
     }
 
     public String getBaseURL() throws IllegalStateException {

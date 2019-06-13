@@ -42,7 +42,7 @@ public class JaxrsJsonTest {
     @Container
     public static MicroProfileApplication<?> app = new MicroProfileApplication<>()
                     .withAppContextRoot("/myservice")
-                    .withReadinessPath("people");
+                    .withReadinessPath("/myservice/app/people");
 
     @Inject
     public static PersonService personSvc;
