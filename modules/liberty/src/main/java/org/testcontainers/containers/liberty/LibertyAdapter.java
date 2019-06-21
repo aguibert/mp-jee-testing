@@ -37,7 +37,7 @@ public class LibertyAdapter implements ServerAdapter {
 
     @Override
     public int getDefaultAppStartTimeout() {
-        return 15;
+        return 30;
     }
 
     @Override
