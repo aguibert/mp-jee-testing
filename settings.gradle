@@ -9,11 +9,3 @@ file('modules').eachDir { dir ->
     project(':mp-jee-testing-' + dir.name).projectDir = dir
 }
 
-// Include all test app projects as mp-jee-testing-<APP_NAME>
-file('sample-apps').eachDir { dir ->
-    // Do not include maven projects as gradle projects
-    if (dir.name.contains("maven"))
-      return;
-    include 'mp-jee-testing-' + dir.name
-    project(':mp-jee-testing-' + dir.name).projectDir = dir
-}
