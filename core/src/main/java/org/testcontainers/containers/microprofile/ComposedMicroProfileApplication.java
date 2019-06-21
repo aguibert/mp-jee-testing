@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aguibert.testcontainers.framework;
+package org.testcontainers.containers.microprofile;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import org.aguibert.testcontainers.framework.spi.ServerAdapter;
+import org.testcontainers.containers.microprofile.spi.ServerAdapter;
 
 public class ComposedMicroProfileApplication<SELF extends ComposedMicroProfileApplication<SELF>> extends MicroProfileApplication<SELF> {
 

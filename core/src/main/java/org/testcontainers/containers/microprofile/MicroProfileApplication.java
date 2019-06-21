@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aguibert.testcontainers.framework;
+package org.testcontainers.containers.microprofile;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -28,12 +28,12 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.Future;
 
-import org.aguibert.testcontainers.framework.spi.ServerAdapter;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.microprofile.spi.ServerAdapter;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;

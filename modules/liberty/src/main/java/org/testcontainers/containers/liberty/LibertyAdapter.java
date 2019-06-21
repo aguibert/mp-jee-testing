@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.aguibert.testcontainers.framework.liberty;
+package org.testcontainers.containers.liberty;
 
 import java.io.File;
 
-import org.aguibert.testcontainers.framework.spi.ServerAdapter;
+import org.testcontainers.containers.microprofile.spi.ServerAdapter;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 public class LibertyAdapter implements ServerAdapter {
