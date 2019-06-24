@@ -141,14 +141,17 @@ public class MicroProfileApplication<SELF extends MicroProfileApplication<SELF>>
 
     public <T> T createRestClient(Class<T> clazz, String applicationPath) {
         Objects.requireNonNull(applicationPath, "Supplied 'applicationPath' must not be null");
-        String urlPath = getBaseURL();
-        urlPath += applicationPath;
-        LOGGER.info("Building rest client for " + clazz + " with path: " + urlPath + " and providers: " + providers);
-        return JAXRSClientFactory.create(urlPath, clazz, providers);
+        String appURL = getApplicationURL();
+        LOGGER.info("Building rest client for " + clazz + " with path: " + appURL + " and providers: " + providers);
+        return JAXRSClientFactory.create(appURL, clazz, providers);
     }
 
     public <T> T createRestClient(Class<T> clazz) {
         return createRestClient(clazz, JAXRSUtilities.resolveJaxrsAppPath(appContextRoot, clazz));
+    }
+
+    public String getApplicationURL() throws IllegalStateException {
+        return getBaseURL() + appContextRoot;
     }
 
     public String getBaseURL() throws IllegalStateException {
